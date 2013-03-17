@@ -754,6 +754,10 @@ XhivOpenServer(xhiv_response *responses, pid_t *return_pid)
     fflush(stdout);
     fflush(stderr);
 
+    /* All tests should finish in less than 5 minutes - set timer to kill
+       any processes that fail to notice their other half crashed */
+    alarm(300);
+
     kidpid = fork();
     if (kidpid == 0) { /* child */
         free(display);
