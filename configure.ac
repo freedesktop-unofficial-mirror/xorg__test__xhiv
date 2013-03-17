@@ -54,5 +54,7 @@ PKG_CHECK_MODULES(LIBXCB, [xcb])
 AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
+	tests/Makefile
+	tests/libX11/Makefile
         ])
 AC_OUTPUT

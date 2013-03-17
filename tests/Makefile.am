@@ -21,20 +21,4 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-SUBDIRS = src tests
-
-noinst_HEADERS = include/xhiv.h
-
-EXTRA_DIST = autogen.sh
-
-MAINTAINERCLEANFILES = ChangeLog INSTALL
-
-.PHONY: ChangeLog INSTALL
-
-INSTALL:
-	$(INSTALL_CMD)
-
-ChangeLog:
-	$(CHANGELOG_CMD)
-
-dist-hook: ChangeLog INSTALL
+SUBDIRS = libX11

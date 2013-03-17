@@ -21,20 +21,11 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-SUBDIRS = src tests
+noinst_PROGRAMS  = XAllocColorCells
 
-noinst_HEADERS = include/xhiv.h
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
+AM_CFLAGS = $(CWARNFLAGS) $(LIBX11_CFLAGS)
+LDADD = -L$(top_builddir)/src -lXhiv $(LIBX11_LIBS)
+# ../../src/xstrans.o ../../src/server.o ../../src/xlib_client.o
 
-EXTRA_DIST = autogen.sh
 
-MAINTAINERCLEANFILES = ChangeLog INSTALL
-
-.PHONY: ChangeLog INSTALL
-
-INSTALL:
-	$(INSTALL_CMD)
-
-ChangeLog:
-	$(CHANGELOG_CMD)
-
-dist-hook: ChangeLog INSTALL
