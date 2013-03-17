@@ -56,9 +56,11 @@ extern char *XhivOpenServer(xhiv_response *responses, pid_t *return_pid);
 extern Display *XhivOpenDisplay(xhiv_response *responses);
 extern int XhivCloseDisplay(Display *dpy);
 
+#ifdef HAVE_XCB
 /* Open an xcb display connection to a new Xhiv server */
 #include <xcb/xcb.h>
 extern xcb_connection_t *xhiv_connect(xhiv_response *responses);
 extern int xhiv_disconnect(xcb_connection_t *conn);
+#endif
 
 #endif /* XHIV_H */

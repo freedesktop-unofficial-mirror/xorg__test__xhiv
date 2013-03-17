@@ -2,10 +2,13 @@ noinst_LIBRARIES = libXhiv.a
 
 libXhiv_a_SOURCES = \
         proto.h \
-        xcb_client.c \
         xlib_client.c \
         xstrans.c \
         server.c
+
+if HAVE_XCB
+ libXhiv_a_SOURCES += xcb_client.c
+endif
 
 AM_CFLAGS = $(XHIV_CFLAGS) $(CWARNFLAGS) $(LIBX11_CFLAGS) $(LIBXCB_CFLAGS)
 
