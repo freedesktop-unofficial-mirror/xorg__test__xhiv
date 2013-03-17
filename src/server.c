@@ -28,7 +28,7 @@
 #include "xhiv.h"
 #include "proto.h"
 
-#define X11_t
+#define XSERV_t
 #define TRANS_SERVER
 #include <X11/Xtrans/Xtrans.h>
 #include <X11/Xtrans/Xtransint.h>
@@ -281,7 +281,7 @@ CloseListenTrans(XtransConnInfo *ListenTransConns, int ListenTransCount)
     int i;
 
     for (i = 0; i < ListenTransCount; i++)
-        _X11TransClose(ListenTransConns[i]);
+        _XSERVTransClose(ListenTransConns[i]);
 }
 
 static XtransConnInfo
@@ -295,7 +295,7 @@ WaitForClient(XtransConnInfo *ListenTransConns, int ListenTransCount)
     assert (pollfds != NULL);
 
     for (i = 0; i < ListenTransCount; i++) {
-        pollfds[i].fd = _X11TransGetConnectionNumber(ListenTransConns[i]);
+        pollfds[i].fd = _XSERVTransGetConnectionNumber(ListenTransConns[i]);
         pollfds[i].events = POLLIN;
     }
 
@@ -311,7 +311,7 @@ WaitForClient(XtransConnInfo *ListenTransConns, int ListenTransCount)
                 else if (pollfds[i].revents) {
                     int status;
                     ClientTransConn =
-                        _X11TransAccept(ListenTransConns[i], &status);
+                        _XSERVTransAccept(ListenTransConns[i], &status);
                     if (ClientTransConn)
                         break;
                 }
@@ -355,14 +355,14 @@ HandleClientResponses(client_state *client)
 
             memcpy(&rep, crb->response_data, nbytes);
             rep.sequenceNumber = (CARD16) crb->response_sequence;
-            wbytes = _X11TransWrite(client->conn, (char *) &rep, nbytes);
+            wbytes = _XSERVTransWrite(client->conn, (char *) &rep, nbytes);
             if (wbytes > 0)
                 crb->response_written += wbytes;
         }
 
         if (crb->response_written < crb->response_datalen) {
             nbytes = crb->response_datalen - crb->response_written;
-            wbytes = _X11TransWrite(client->conn,
+            wbytes = _XSERVTransWrite(client->conn,
                 (const char *) crb->response_data + crb->response_written,
                 nbytes);
             if (wbytes > 0)
@@ -395,7 +395,7 @@ HandleClientResponses(client_state *client)
             read(urandom_fd, ranbuf, nbytes);
 
             do {
-                wbytes = _X11TransWrite(client->conn, ranbuf, nbytes);
+                wbytes = _XSERVTransWrite(client->conn, ranbuf, nbytes);
                 if (wbytes > 0)
                     crb->response_written += wbytes;
                 if (wbytes != nbytes) /* pipe is full, try again later */
@@ -428,7 +428,7 @@ DiscardRequestData(client_state *client)
     while (client->req_len_remaining) {
         int nbytes = (client->req_len_remaining > sizeof(readbuf)) ?
             sizeof(readbuf) : client->req_len_remaining;
-        int rbytes = _X11TransRead(client->conn, (char *)readbuf, nbytes);
+        int rbytes = _XSERVTransRead(client->conn, (char *)readbuf, nbytes);
         if (rbytes <= 0)
             break;
         client->req_len_remaining -= rbytes;
@@ -472,10 +472,10 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
             return; /* back to poll again for more data */
 
         errno = 0;
-        rbytes = _X11TransRead(client->conn, (char *)&req, sizeof(req));
+        rbytes = _XSERVTransRead(client->conn, (char *)&req, sizeof(req));
         if ((rbytes == 0) && (errno == 0)) {
             /* client disconnected */
-            _X11TransClose(client->conn);
+            _XSERVTransClose(client->conn);
             return;
         }
         if (rbytes <= 0) {
@@ -486,7 +486,7 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
         }
         assert(rbytes == sizeof(req));
         if (req.length == 0) { /* BIG Request */
-            rbytes = _X11TransRead(client->conn, (char *)&length, 4);
+            rbytes = _XSERVTransRead(client->conn, (char *)&length, 4);
             assert(rbytes == 4);
         }
         else
@@ -524,7 +524,7 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
 
                     if (nbytes > sizeof(extension))
                         nbytes = sizeof(extension);
-                    rbytes = _X11TransRead(client->conn, (char *)&extension,
+                    rbytes = _XSERVTransRead(client->conn, (char *)&extension,
                                            nbytes);
                     if (rbytes > 0) {
                         assert(client->req_len_remaining >= rbytes);
@@ -643,8 +643,8 @@ XhivRunServer(XtransConnInfo *ListenTransConns, int ListenTransCount,
     /* Wait for a client to connect - when it does, the connections
        passed in are closed, and only the client socket remains open */
     client.conn = WaitForClient(ListenTransConns, ListenTransCount);
-    clientfd.fd = _X11TransGetConnectionNumber(client.conn);
-    _X11TransSetOption(client.conn, TRANS_NONBLOCKING, 1);
+    clientfd.fd = _XSERVTransGetConnectionNumber(client.conn);
+    _XSERVTransSetOption(client.conn, TRANS_NONBLOCKING, 1);
 
     for (;;) { /* repeat until client hangs up on us */
         int readyfds = poll(&clientfd, 1, -1);
@@ -673,7 +673,7 @@ XhivRunServer(XtransConnInfo *ListenTransConns, int ListenTransCount,
         else
             clientfd.events = POLLIN | POLLOUT;
     }
-    _X11TransClose(client.conn);
+    _XSERVTransClose(client.conn);
     exit(0);
 }
 
@@ -737,7 +737,7 @@ XhivOpenServer(xhiv_response *responses, pid_t *return_pid)
 
         snprintf(port, sizeof(port), "%d", i);
 
-        if (_X11TransMakeAllCOTSServerListeners(
+        if (_XSERVTransMakeAllCOTSServerListeners(
                 port, &partial, &ListenTransCount, &ListenTransConns) >= 0)
         {
             snprintf(port, sizeof(port), ":%d", i);

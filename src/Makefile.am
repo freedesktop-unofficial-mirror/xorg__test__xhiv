@@ -1,6 +1,7 @@
 noinst_LIBRARIES = libXhiv.a
 
 libXhiv_a_SOURCES = \
+        os.h \
         proto.h \
         xlib_client.c \
         xstrans.c \
