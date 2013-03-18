@@ -22,6 +22,7 @@
 #
 
 noinst_PROGRAMS  = XAllocColorCells
+noinst_PROGRAMS += XQueryFont
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
 AM_CFLAGS = $(CWARNFLAGS) $(LIBX11_CFLAGS)
