@@ -492,6 +492,11 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
         else
             length = req.length;
 
+#ifdef DEBUG
+        printf("Request %d (match seq %d): %d/%d\n", client->sequence,
+               client->match_sequence, req.reqType, req.data);
+#endif
+
         /* X11 packets count the initial header as part of their length */
         client->req_len_remaining = (length << 2) - sizeof(req);
 
@@ -588,8 +593,18 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
                 break;
 
             case X_XHIV_PROTO_REQTYPE: /* our fake extension */
-                if (req.data == XhivSeqStart)
-                    client->match_sequence = 0;
+                if (req.data == XhivSeqStart) {
+                    uint32_t newseq;
+                    rbytes = _XSERVTransRead(client->conn, (char *)&newseq,
+                                             sizeof(uint32_t));
+                    assert(rbytes == sizeof(uint32_t));
+                    client->req_len_remaining -= rbytes;
+
+                    client->match_sequence = newseq;
+#ifdef DEBUG
+                    printf("Set match sequence to %d\n", newseq);
+#endif
+                }
                 break;
 
             case BIGREQ_REQTYPE: /* our fake BIG-REQUESTS extension */

@@ -36,7 +36,6 @@ Display *
 XhivOpenDisplay(xhiv_response *responses) {
     char *dpyname;
     Display *dpy;
-    xReq *xssreq;
 
     dpyname = XhivOpenServer(responses, &server_pid);
     assert(dpyname != NULL);
@@ -44,13 +43,20 @@ XhivOpenDisplay(xhiv_response *responses) {
     dpy = XOpenDisplay(dpyname);
     assert(dpy != NULL);
 
-    LockDisplay(dpy);
-    GetEmptyReq(XHIV_PROTO_REQTYPE, xssreq);
-    xssreq->data = XhivSeqStart;
-    UnlockDisplay(dpy);
-    SyncHandle();
+    XhivSequenceSync(dpy, 0);
 
     return dpy;
+}
+
+void
+XhivSequenceSync(Display *dpy, uint32_t sequence) {
+    xResourceReq *xssreq;
+
+    LockDisplay(dpy);
+    GetResReq(XHIV_PROTO_REQTYPE, sequence, xssreq);
+    ((xXhivSeqStartReq *)xssreq)->reqMinor = XhivSeqStart;
+    UnlockDisplay(dpy);
+    SyncHandle();
 }
 
 int

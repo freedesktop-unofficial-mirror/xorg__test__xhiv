@@ -25,6 +25,8 @@
 # include "config.h"
 #endif
 
+/* Fake extension protocol between xhiv client & server */
+
 #include <inttypes.h>
 
 /* Major op code (reqType) */
@@ -33,11 +35,16 @@
 /* Minor op code (reqMinor) */
 #define XhivSeqStart            0 /* start sequence counting */
 
-/* Fake extension protocol between xhiv client setup & server */
+/*
+ * Force the sequence number used for matching canned request replies
+ * to be set to the value specified in this request.  (i.e. if this
+ * request has sequence 0, the next one will be treated as 1 & so on).
+ */
 typedef struct {
     uint8_t     reqType;        /* XHIV_PROTO_REQTYPE */
     uint8_t     reqMinor;       /* XHIV_PROTO_SEQSTART */
-    uint16_t    length;         /* 1 - no more data needed */
+    uint16_t    length;         /* 2 - no more data needed */
+    uint32_t    sequence;       /* treat this request as having this seq no. */
 } xXhivSeqStartReq;
 #define sz_xXhivSeqStartReq 4
 

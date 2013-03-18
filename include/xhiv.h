@@ -51,16 +51,18 @@ typedef struct xhiv_response {
 /* Fork a server process and return the string needed to connect to it. */
 extern char *XhivOpenServer(xhiv_response *responses, pid_t *return_pid);
 
-/* Open a Xlib display connection to a new Xhiv server */
+/* Manage an Xlib display connection to a new Xhiv server */
 #include <X11/Xlib.h>
 extern Display *XhivOpenDisplay(xhiv_response *responses);
 extern int XhivCloseDisplay(Display *dpy);
+extern void XhivSequenceSync(Display *dpy, uint32_t sequence);
 
 #ifdef HAVE_XCB
-/* Open an xcb display connection to a new Xhiv server */
+/* Manage an xcb display connection to a new Xhiv server */
 #include <xcb/xcb.h>
 extern xcb_connection_t *xhiv_connect(xhiv_response *responses);
 extern int xhiv_disconnect(xcb_connection_t *conn);
+extern void xhiv_sequence_sync(xcb_connection_t *conn, uint32_t sequence);
 #endif
 
 #endif /* XHIV_H */

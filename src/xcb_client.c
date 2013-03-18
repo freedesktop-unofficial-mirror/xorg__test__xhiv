@@ -44,21 +44,11 @@ static const xcb_protocol_request_t xcb_req = {
     .isvoid = 1
 };
 
-static xXhivSeqStartReq xssreq = {
-    .reqType  = X_XHIV_PROTO_REQTYPE,
-    .reqMinor = XhivSeqStart,
-    .length   = 1 /* no more data needed */
-};
-
 xcb_connection_t *
 xhiv_connect(xhiv_response *responses) {
     char *displayname;
     xcb_connection_t *conn;
     int screen;
-    struct iovec xcb_parts[4] = {
-        [2] = { .iov_base = &xssreq, .iov_len = sizeof(xssreq) },
-        [3] = { .iov_base = 0, .iov_len = 0 /* no padding needed */ }
-    };
 
     displayname = XhivOpenServer(responses, &server_pid);
     assert(displayname != NULL);
@@ -67,9 +57,25 @@ xhiv_connect(xhiv_response *responses) {
     assert(conn != NULL);
     assert(screen == 0);
 
-    xcb_send_request(conn, XCB_REQUEST_RAW, xcb_parts + 2, &xcb_req);
+    xhiv_sequence_sync(conn, 0);
 
     return conn;
+}
+
+void
+xhiv_sequence_sync(xcb_connection_t *conn, uint32_t seq) {
+    xXhivSeqStartReq xssreq = {
+        .reqType  = X_XHIV_PROTO_REQTYPE,
+        .reqMinor = XhivSeqStart,
+        .length   = 2,
+        .sequence = seq
+    };
+    struct iovec xcb_parts[4] = {
+        [2] = { .iov_base = &xssreq, .iov_len = sizeof(xssreq) },
+        [3] = { .iov_base = 0, .iov_len = 0 /* no padding needed */ }
+    };
+
+    xcb_send_request(conn, XCB_REQUEST_RAW, xcb_parts + 2, &xcb_req);
 }
 
 int
