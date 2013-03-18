@@ -28,4 +28,5 @@ AM_CFLAGS = $(CWARNFLAGS) $(LIBX11_CFLAGS)
 LDADD = -L$(top_builddir)/src -lXhiv $(LIBX11_LIBS)
 # ../../src/xstrans.o ../../src/server.o ../../src/xlib_client.o
 
+TESTS = $(noinst_PROGRAMS)
 
