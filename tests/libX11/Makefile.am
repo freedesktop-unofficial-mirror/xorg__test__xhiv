@@ -24,6 +24,7 @@
 noinst_PROGRAMS  = XAllocColorCells
 noinst_PROGRAMS += XGetMotionEvents
 noinst_PROGRAMS += XListFontsWithInfo
+noinst_PROGRAMS += XListHosts
 noinst_PROGRAMS += XQueryFont
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
