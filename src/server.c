@@ -227,29 +227,41 @@ static client_response_buffer *
 AddResponseToBuffer(client_response_buffer *crb, const xhiv_response *response,
                     uint32_t sequence)
 {
-    client_response_buffer *new_crb;
+    client_response_buffer *new_crb_head = NULL, *new_crb_tail = NULL;
+    const xhiv_response *r;
 
-    uint64_t total_bytes= ((uint64_t) response->length) << 2;
-    assert(total_bytes >= response->response_datalen);
+    for (r = response; r != NULL; r = r->chain) {
+        client_response_buffer *new_crb;
 
-    new_crb = calloc(1, sizeof(client_response_buffer));
-    assert(new_crb != NULL);
+        uint64_t total_bytes= ((uint64_t) r->length) << 2;
+        assert(total_bytes >= r->response_datalen);
 
-    new_crb->response_data = response->response_data;
-    new_crb->response_datalen = response->response_datalen;
-    new_crb->length = response->length;
-    new_crb->response_sequence = (response->flags & XHIV_NO_SET_SEQUENCE)
-        ? XHIV_SEQ_IGNORE : sequence;
+        new_crb = calloc(1, sizeof(client_response_buffer));
+        assert(new_crb != NULL);
+
+        new_crb->response_data = r->response_data;
+        new_crb->response_datalen = r->response_datalen;
+        new_crb->length = r->length;
+        new_crb->response_sequence = (r->flags & XHIV_NO_SET_SEQUENCE)
+            ? XHIV_SEQ_IGNORE : sequence;
+
+        if (new_crb_tail !=  NULL) {
+            new_crb_tail->next = new_crb;
+            new_crb_tail = new_crb;
+        } else {
+            new_crb_head = new_crb_tail = new_crb;
+        }
+    }
 
     if (crb == NULL)
-        crb = new_crb;
+        crb = new_crb_head;
     else {
         client_response_buffer *n;
 
         for (n = crb ; n->next != NULL; n = n->next) {
             /* find end of list */
         }
-        n->next = new_crb;
+        n->next = new_crb_head;
     }
     return crb;
 }

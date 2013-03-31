@@ -36,7 +36,10 @@
 #define XHIV_NO_SET_SEQUENCE   0x01   /* Don't set sequence number in reply */
 
 typedef struct xhiv_response {
+    /* next is used to make up the list of responses to search through.
+       Once one is found, all the responses along the chain are sent. */
     struct xhiv_response *next;
+    struct xhiv_response *chain;
     uint16_t reqType;  /* Request code, extension number or XHIV_REQ constant */
     uint16_t reqMinor; /* Extension minor request code */
     uint32_t sequence; /* Sequence number, or XHIV_SEQ_IGNORE */
