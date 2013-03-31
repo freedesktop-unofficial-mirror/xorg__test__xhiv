@@ -26,6 +26,7 @@ noinst_PROGRAMS += XGetMotionEvents
 noinst_PROGRAMS += XListFontsWithInfo
 noinst_PROGRAMS += XListHosts
 noinst_PROGRAMS += XQueryFont
+noinst_PROGRAMS += XkbGetDeviceInfo
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
 AM_CFLAGS = $(CWARNFLAGS) $(LIBX11_CFLAGS)
