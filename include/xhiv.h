@@ -31,7 +31,8 @@
 #define XHIV_REQ_IGNORE        1024   /* Match only seq number, not req code */
 #define XHIV_REQ_CONN_SETUP    1025   /* Initial handshake */
 
-#define XHIV_SEQ_IGNORE  0xFFFFFFFF   /* Match only req code, not seq number */
+#define XHIV_SEQ_IGNORE    0xFFFFFFFF /* Match only req code, not seq number */
+#define XHIV_SEQ_MATCHDATA 0xFFFFFFFE /* Match only if match_data matches */
 
 #define XHIV_NO_SET_SEQUENCE   0x01   /* Don't set sequence number in reply */
 
@@ -43,6 +44,7 @@ typedef struct xhiv_response {
     uint16_t reqType;  /* Request code, extension number or XHIV_REQ constant */
     uint16_t reqMinor; /* Extension minor request code */
     uint32_t sequence; /* Sequence number, or XHIV_SEQ_IGNORE */
+    const void *match_data;     /* Additional data for matching requests */
     uint32_t length;   /* Total length of reply packet, in 4-byte words */
     const void *response_data;  /* Data to return */
     uint32_t response_datalen;  /* Length of response_data, in bytes */

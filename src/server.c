@@ -521,7 +521,7 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
             switch (req.reqType) {
             case X_QueryExtension:
                 /* XOpenDisplay checks for BIG-REQUESTS & XKB extensions.
-                   We only simulate BIG-REQUESTS for now */
+                   We only simulate BIG-REQUESTS here for now */
                 {
                     int nbytes = client->req_len_remaining;
                     char extension[32] = "";
@@ -533,11 +533,12 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
                         .first_event = 0,
                         .first_error = 0
                     };
-                    xhiv_response qext_response = {
+                    xhiv_response default_qext_response = {
                         .length = bytes_to_int32(sz_xQueryExtensionReply),
                         .response_data = &qext_reply,
                         .response_datalen = sizeof(qext_reply)
                     };
+                    xhiv_response *qext_response = &default_qext_response;
 
                     if (nbytes > sizeof(extension))
                         nbytes = sizeof(extension);
@@ -546,17 +547,30 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
                     if (rbytes > 0) {
                         assert(client->req_len_remaining >= rbytes);
                         client->req_len_remaining -= rbytes;
-                        if (strncmp(extension + 4, XBigReqExtensionName,
-                                    sizeof(XBigReqExtensionName)) == 0) {
-                            qext_reply.present = xTrue;
-                            qext_reply.major_opcode = BIGREQ_REQTYPE;
+                        /* Check to see if caller provided a match */
+                        for (r = responses; r != NULL ; r = r->next) {
+                            if ((r->reqType == X_QueryExtension) &&
+                                (r->sequence == XHIV_SEQ_MATCHDATA) &&
+                                (strncmp(extension + 4, r->match_data,
+                                         sizeof(extension) - 4) == 0)) {
+                                qext_response = r;
+                                break;
+                            }
+                        }
+                        /* If caller didn't, then handle ourselves */
+                        if (qext_response == &default_qext_response) {
+                            if (strncmp(extension + 4, XBigReqExtensionName,
+                                        sizeof(XBigReqExtensionName)) == 0) {
+                                qext_reply.present = xTrue;
+                                qext_reply.major_opcode = BIGREQ_REQTYPE;
+                            }
                         }
                     }
                     else {
                         assert(rbytes == 0);
                     }
                     client->crb =
-                        AddResponseToBuffer(client->crb, &qext_response,
+                        AddResponseToBuffer(client->crb, qext_response,
                                             client->sequence);
                 }
                 break;
