@@ -22,6 +22,7 @@
 #
 
 noinst_PROGRAMS  = XAllocColorCells
+noinst_PROGRAMS += XGetMotionEvents
 noinst_PROGRAMS += XListFontsWithInfo
 noinst_PROGRAMS += XQueryFont
 
