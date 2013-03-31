@@ -29,13 +29,28 @@
 #include <X11/Xlibint.h>
 #include <assert.h>
 #include <sys/types.h>
+#include <stdio.h>
+#include <errno.h>
 
 static pid_t server_pid;
+
+static int
+XhivIOError(Display *dpy) {
+    fprintf(stderr, "XIO:  fatal IO error %d (%s) on X server \"%s\"\r\n",
+            errno, strerror (errno), DisplayString (dpy));
+    fprintf (stderr,
+         "      after %lu requests (%lu known processed) with %d events remaining.\r\n",
+             NextRequest(dpy) - 1, LastKnownRequestProcessed(dpy),
+             QLength(dpy));
+    abort();
+}
 
 Display *
 XhivOpenDisplay(xhiv_response *responses) {
     char *dpyname;
     Display *dpy;
+
+    XSetIOErrorHandler(XhivIOError);
 
     dpyname = XhivOpenServer(responses, &server_pid);
     assert(dpyname != NULL);
