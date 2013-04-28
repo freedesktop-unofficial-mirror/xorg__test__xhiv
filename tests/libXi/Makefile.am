@@ -22,6 +22,7 @@
 #
 
 noinst_PROGRAMS  = XGetDeviceButtonMapping
+noinst_PROGRAMS += XGetDeviceControl
 noinst_PROGRAMS += XQueryDeviceState
 noinst_PROGRAMS += XIPassiveGrabDevice
 
