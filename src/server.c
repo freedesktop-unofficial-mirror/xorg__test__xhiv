@@ -60,6 +60,7 @@ typedef struct client_response_buffer {
     uint32_t length;      /* Total length of reply packet, in 4-byte words */
     uint64_t response_written;  /* Number of bytes written so far */
     uint32_t response_sequence; /* Sequence number to set or XHIV_SEQ_IGNORE */
+    uint32_t send_count;        /* Number of times to send this data */
 } client_response_buffer;
 
 typedef struct client_state {
@@ -244,6 +245,9 @@ AddResponseToBuffer(client_response_buffer *crb, const xhiv_response *response,
         new_crb->length = r->length;
         new_crb->response_sequence = (r->flags & XHIV_NO_SET_SEQUENCE)
             ? XHIV_SEQ_IGNORE : sequence;
+        new_crb->send_count = r->repeat + 1; /* Always send at least once */
+        assert((new_crb->send_count * new_crb->response_datalen) <=
+               (new_crb->length << 2));
 
         if (new_crb_tail !=  NULL) {
             new_crb_tail->next = new_crb;
@@ -372,11 +376,12 @@ HandleClientResponses(client_state *client)
                 crb->response_written += wbytes;
         }
 
-        if (crb->response_written < crb->response_datalen) {
-            nbytes = crb->response_datalen - crb->response_written;
+        total_bytes = (uint64_t) crb->response_datalen * crb->send_count;
+        while (crb->response_written < total_bytes) {
+            uint32_t offset = crb->response_written % crb->response_datalen;
+            nbytes = crb->response_datalen - offset;
             wbytes = _XSERVTransWrite(client->conn,
-                (const char *) crb->response_data + crb->response_written,
-                nbytes);
+                (const char *) crb->response_data + offset, nbytes);
             if (wbytes > 0)
                 crb->response_written += wbytes;
             if (wbytes != nbytes) /* pipe is full, try again later */
@@ -384,6 +389,7 @@ HandleClientResponses(client_state *client)
         }
 
         total_bytes = ((uint64_t) crb->length) << 2;
+        assert(total_bytes >= crb->response_written);
         nbytes = total_bytes - crb->response_written;
         if (nbytes > 0) {
             char ranbuf[32768];

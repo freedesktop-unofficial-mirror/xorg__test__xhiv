@@ -46,10 +46,11 @@ typedef struct xhiv_response {
     uint32_t sequence; /* Sequence number, or XHIV_SEQ_IGNORE */
     const void *match_data;     /* Additional data for matching requests */
     uint32_t length;   /* Total length of reply packet, in 4-byte words */
+    uint32_t repeat;   /* Number of times to repeat this packet in reply */
     const void *response_data;  /* Data to return */
     uint32_t response_datalen;  /* Length of response_data, in bytes */
     /* Response will be filled with random data to fill the difference
-       between response_datalen & length */
+       between (response_datalen * (1 + repeat)) & length */
     uint32_t flags;   /* flags controlling various options */
 } xhiv_response;
 
