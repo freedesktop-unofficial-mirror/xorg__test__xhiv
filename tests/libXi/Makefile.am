@@ -21,5 +21,14 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-SUBDIRS = libX11
-SUBDIRS += libXi
+noinst_PROGRAMS  = XGetDeviceButtonMapping
+
+noinst_HEADERS = xhiv-Xi.h
+
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
+AM_CFLAGS = $(CWARNFLAGS) $(LIBXI_CFLAGS)
+LDADD = -L$(top_builddir)/src -lXhiv $(LIBXI_LIBS)
+# ../../src/xstrans.o ../../src/server.o ../../src/xlib_client.o
+
+TESTS = $(noinst_PROGRAMS)
+
