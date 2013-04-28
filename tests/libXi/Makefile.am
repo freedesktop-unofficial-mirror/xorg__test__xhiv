@@ -22,6 +22,7 @@
 #
 
 noinst_PROGRAMS  = XGetDeviceButtonMapping
+noinst_PROGRAMS += XIPassiveGrabDevice
 
 noinst_HEADERS = xhiv-Xi.h
 

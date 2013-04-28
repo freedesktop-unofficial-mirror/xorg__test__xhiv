@@ -27,6 +27,7 @@
 #include "xhiv.h"
 #include <X11/extensions/XI.h>
 #include <X11/extensions/XIproto.h>
+#include <X11/extensions/XI2proto.h>
 
 /* Common definitions for Xinput extension tests */
 
@@ -77,6 +78,33 @@ static xhiv_response xi_vers_response = {
     .length = (SIZEOF(xQueryExtensionReply) >> 2),
     .response_data = &xi_vers_reply,
     .response_datalen = sizeof(xi_vers_reply)
+};
+
+
+/* Report default Xinput 2.x version */
+#ifndef MY_XI2_MAJOR_VERSION
+# define MY_XI2_MAJOR_VERSION 2
+#endif
+
+#ifndef MY_XI2_MINOR_VERSION
+# define MY_XI2_MINOR_VERSION 2
+#endif
+
+static const xXIQueryVersionReply xi2_vers_reply = {
+    .repType = X_Reply,
+    .RepType = X_XIQueryVersion,
+    .length = 0,
+    .major_version = MY_XI2_MAJOR_VERSION,
+    .minor_version = MY_XI2_MINOR_VERSION
+};
+static xhiv_response xi2_vers_response = {
+    .next = &xi_vers_response,
+    .reqType = MY_XI_EXT_CODE,
+    .reqMinor = X_XIQueryVersion,
+    .sequence = XHIV_SEQ_IGNORE,
+    .length = (SIZEOF(xXIQueryVersionReply) >> 2),
+    .response_data = &xi2_vers_reply,
+    .response_datalen = sizeof(xi2_vers_reply)
 };
 
 
