@@ -27,6 +27,7 @@ noinst_PROGRAMS += XGetDeviceDontPropagateList
 noinst_PROGRAMS += XGetDeviceMotionEvents
 noinst_PROGRAMS += XGetFeedbackControl
 noinst_PROGRAMS += XQueryDeviceState
+noinst_PROGRAMS += XIGetProperty
 noinst_PROGRAMS += XIPassiveGrabDevice
 
 noinst_HEADERS = xhiv-Xi.h
