@@ -24,6 +24,7 @@
 noinst_PROGRAMS  = XGetDeviceButtonMapping
 noinst_PROGRAMS += XGetDeviceControl
 noinst_PROGRAMS += XGetDeviceDontPropagateList
+noinst_PROGRAMS += XGetDeviceMotionEvents
 noinst_PROGRAMS += XGetFeedbackControl
 noinst_PROGRAMS += XQueryDeviceState
 noinst_PROGRAMS += XIPassiveGrabDevice
