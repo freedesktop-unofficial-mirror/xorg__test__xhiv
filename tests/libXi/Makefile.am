@@ -27,6 +27,7 @@ noinst_PROGRAMS += XGetDeviceDontPropagateList
 noinst_PROGRAMS += XGetDeviceMotionEvents
 noinst_PROGRAMS += XGetDeviceProperty
 noinst_PROGRAMS += XGetFeedbackControl
+noinst_PROGRAMS += XListInputDevices
 noinst_PROGRAMS += XQueryDeviceState
 noinst_PROGRAMS += XIGetProperty
 noinst_PROGRAMS += XIGetSelectedEvents
