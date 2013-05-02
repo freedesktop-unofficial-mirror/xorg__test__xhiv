@@ -49,6 +49,7 @@ PKG_CHECK_MODULES(XHIV, [xproto >= 7.0.22 bigreqsproto xtrans])
 
 # Use pkg-config to get required cflags & libraries for each library we test
 PKG_CHECK_MODULES(LIBX11, [x11])
+PKG_CHECK_MODULES(LIBXEXT, [xext x11])
 PKG_CHECK_MODULES(LIBXI, [xi x11])
 
 PKG_CHECK_EXISTS([xcb], [HAVE_XCB="yes"], [HAVE_XCB="no"])
@@ -63,6 +64,7 @@ AC_CONFIG_FILES([
 	src/Makefile
 	tests/Makefile
 	tests/libX11/Makefile
+	tests/libXext/Makefile
 	tests/libXi/Makefile
 	tests/libxcb/Makefile
         ])

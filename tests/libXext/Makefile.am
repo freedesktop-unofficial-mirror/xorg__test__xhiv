@@ -21,10 +21,11 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-SUBDIRS = libX11
-SUBDIRS += libXext
-SUBDIRS += libXi
+noinst_PROGRAMS  = XcupGetReservedColormapEntries
 
-if HAVE_XCB
-SUBDIRS += libxcb
-endif
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
+AM_CFLAGS = $(CWARNFLAGS) $(LIBXEXT_CFLAGS)
+LDADD = -L$(top_builddir)/src -lXhiv $(LIBXEXT_LIBS)
+
+TESTS = $(noinst_PROGRAMS)
+
