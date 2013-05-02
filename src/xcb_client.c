@@ -79,10 +79,12 @@ xhiv_sequence_sync(xcb_connection_t *conn, uint32_t seq) {
 }
 
 int
-xhiv_disconnect(xcb_connection_t *conn) {
+xhiv_disconnect(xcb_connection_t *conn, xhiv_connection_error_allowed cea) {
     pid_t waitfor;
 
-    assert(xcb_connection_has_error(conn) == 0);
+    if (cea == xhiv_conn_no_error_allowed) {
+        assert(xcb_connection_has_error(conn) == 0);
+    }
     xcb_disconnect(conn);
 
     waitfor = server_pid;

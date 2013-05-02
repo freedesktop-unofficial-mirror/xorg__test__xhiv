@@ -66,8 +66,15 @@ extern void XhivSequenceSync(Display *dpy, uint32_t sequence);
 #ifdef HAVE_XCB
 /* Manage an xcb display connection to a new Xhiv server */
 #include <xcb/xcb.h>
+
+typedef enum {
+    xhiv_conn_no_error_allowed = 0,
+    xhiv_conn_error_allowed
+} xhiv_connection_error_allowed;
+
 extern xcb_connection_t *xhiv_connect(xhiv_response *responses);
-extern int xhiv_disconnect(xcb_connection_t *conn);
+extern int xhiv_disconnect(xcb_connection_t *conn,
+                           xhiv_connection_error_allowed cea);
 extern void xhiv_sequence_sync(xcb_connection_t *conn, uint32_t sequence);
 #endif
 
