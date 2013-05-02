@@ -22,6 +22,7 @@
 #
 
 noinst_PROGRAMS  = XcupGetReservedColormapEntries
+noinst_PROGRAMS += XcupStoreColors
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
 AM_CFLAGS = $(CWARNFLAGS) $(LIBXEXT_CFLAGS)
