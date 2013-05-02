@@ -29,6 +29,8 @@
 #include <xcb/xcbext.h>
 #include <assert.h>
 #include <sys/types.h>
+#include <unistd.h>
+#include <signal.h>
 
 static pid_t server_pid;
 
@@ -87,6 +89,8 @@ xhiv_disconnect(xcb_connection_t *conn, xhiv_connection_error_allowed cea) {
     }
     xcb_disconnect(conn);
 
+    sleep(1);
+    kill(server_pid, SIGHUP);
     waitfor = server_pid;
     server_pid = -1;
     return XhivWaitServer(waitfor);
