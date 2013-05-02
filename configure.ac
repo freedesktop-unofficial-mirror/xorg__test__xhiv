@@ -64,5 +64,6 @@ AC_CONFIG_FILES([
 	tests/Makefile
 	tests/libX11/Makefile
 	tests/libXi/Makefile
+	tests/libxcb/Makefile
         ])
 AC_OUTPUT

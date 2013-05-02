@@ -21,9 +21,11 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-SUBDIRS = libX11
-SUBDIRS += libXi
+noinst_PROGRAMS  = xcb_read_packet
 
-if HAVE_XCB
-SUBDIRS += libxcb
-endif
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
+AM_CFLAGS = $(CWARNFLAGS) $(LIBXCB_CFLAGS)
+LDADD = -L$(top_builddir)/src -lXhiv $(LIBXCB_LIBS)
+
+TESTS = $(noinst_PROGRAMS)
+
