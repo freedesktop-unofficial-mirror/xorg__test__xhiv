@@ -25,6 +25,7 @@ noinst_PROGRAMS  = XcupGetReservedColormapEntries
 noinst_PROGRAMS += XcupStoreColors
 noinst_PROGRAMS += XdbeGetVisualInfo
 noinst_PROGRAMS += XShapeGetRectangles
+noinst_PROGRAMS += XSyncListSystemCounters
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
 AM_CFLAGS = $(CWARNFLAGS) $(LIBXEXT_CFLAGS)
