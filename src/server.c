@@ -531,7 +531,7 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
                 {
                     int nbytes = client->req_len_remaining;
                     char extension[32] = "";
-                    xQueryExtensionReply qext_reply = {
+                    static const xQueryExtensionReply default_qext_reply = {
                         .type = X_Reply,
                         .length = 0,
                         .present = xFalse,
@@ -539,10 +539,18 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
                         .first_event = 0,
                         .first_error = 0
                     };
+                    static const xQueryExtensionReply bigreq_qext_reply = {
+                        .type = X_Reply,
+                        .length = 0,
+                        .present = xTrue,
+                        .major_opcode = BIGREQ_REQTYPE,
+                        .first_event = 0,
+                        .first_error = 0
+                    };
                     xhiv_response default_qext_response = {
                         .length = bytes_to_int32(sz_xQueryExtensionReply),
-                        .response_data = &qext_reply,
-                        .response_datalen = sizeof(qext_reply)
+                        .response_data = &default_qext_reply,
+                        .response_datalen = sizeof(default_qext_reply)
                     };
                     xhiv_response *qext_response = &default_qext_response;
 
@@ -567,8 +575,8 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
                         if (qext_response == &default_qext_response) {
                             if (strncmp(extension + 4, XBigReqExtensionName,
                                         sizeof(XBigReqExtensionName)) == 0) {
-                                qext_reply.present = xTrue;
-                                qext_reply.major_opcode = BIGREQ_REQTYPE;
+                                qext_response->response_data =
+                                    &bigreq_qext_reply;
                             }
                         }
                     }
