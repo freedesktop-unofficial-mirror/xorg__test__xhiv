@@ -21,12 +21,13 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-SUBDIRS = libX11
-SUBDIRS += libXext
-SUBDIRS += libXi
-SUBDIRS += libXinerama
-SUBDIRS += libXrandr
+noinst_PROGRAMS  = XRRGetOutputProperty
 
-if HAVE_XCB
-SUBDIRS += libxcb
-endif
+noinst_HEADERS = xhiv-Xrandr.h
+
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
+AM_CFLAGS = $(CWARNFLAGS) $(LIBXRANDR_CFLAGS)
+LDADD = -L$(top_builddir)/src -lXhiv $(LIBXRANDR_LIBS)
+
+TESTS = $(noinst_PROGRAMS)
+
