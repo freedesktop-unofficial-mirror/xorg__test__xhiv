@@ -24,6 +24,7 @@
 noinst_PROGRAMS  = XRRGetOutputProperty
 noinst_PROGRAMS += XRRGetProviderProperty
 noinst_PROGRAMS += XRRQueryOutputProperty
+noinst_PROGRAMS += XRRQueryProviderProperty
 
 noinst_HEADERS = xhiv-Xrandr.h
 
