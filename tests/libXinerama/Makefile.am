@@ -21,11 +21,11 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-SUBDIRS = libX11
-SUBDIRS += libXext
-SUBDIRS += libXi
-SUBDIRS += libXinerama
+noinst_PROGRAMS  = XineramaQueryScreens
 
-if HAVE_XCB
-SUBDIRS += libxcb
-endif
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
+AM_CFLAGS = $(CWARNFLAGS) $(LIBXINERAMA_CFLAGS)
+LDADD = -L$(top_builddir)/src -lXhiv $(LIBXINERAMA_LIBS)
+
+TESTS = $(noinst_PROGRAMS)
+

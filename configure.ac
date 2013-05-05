@@ -51,6 +51,7 @@ PKG_CHECK_MODULES(XHIV, [xproto >= 7.0.22 bigreqsproto xtrans])
 PKG_CHECK_MODULES(LIBX11, [x11])
 PKG_CHECK_MODULES(LIBXEXT, [xext x11])
 PKG_CHECK_MODULES(LIBXI, [xi x11])
+PKG_CHECK_MODULES(LIBXINERAMA, [xinerama x11])
 
 PKG_CHECK_EXISTS([xcb], [HAVE_XCB="yes"], [HAVE_XCB="no"])
 if test "x$HAVE_XCB" = "xyes" ; then
@@ -66,6 +67,7 @@ AC_CONFIG_FILES([
 	tests/libX11/Makefile
 	tests/libXext/Makefile
 	tests/libXi/Makefile
+	tests/libXinerama/Makefile
 	tests/libxcb/Makefile
         ])
 AC_OUTPUT
