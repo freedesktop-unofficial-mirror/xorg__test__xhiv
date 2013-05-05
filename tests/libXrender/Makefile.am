@@ -23,6 +23,7 @@
 
 noinst_PROGRAMS  = XRenderQueryFilters
 noinst_PROGRAMS += XRenderQueryFormats
+noinst_PROGRAMS += XRenderQueryPictIndexValues
 
 noinst_HEADERS = xhiv-Xrender.h
 
