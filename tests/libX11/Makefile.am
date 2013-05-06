@@ -29,6 +29,8 @@ noinst_PROGRAMS += XListHosts
 noinst_PROGRAMS += XQueryFont
 noinst_PROGRAMS += XkbGetDeviceInfo
 
+noinst_HEADERS = xhiv-Xkb.h
+
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/include
 AM_CFLAGS = $(CWARNFLAGS) $(LIBX11_CFLAGS)
 LDADD = -L$(top_builddir)/src -lXhiv $(LIBX11_LIBS)
