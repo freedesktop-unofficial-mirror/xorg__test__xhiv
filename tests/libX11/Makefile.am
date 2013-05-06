@@ -28,6 +28,7 @@ noinst_PROGRAMS += XListFontsWithInfo
 noinst_PROGRAMS += XListHosts
 noinst_PROGRAMS += XQueryFont
 noinst_PROGRAMS += XkbGetDeviceInfo
+noinst_PROGRAMS += XkbGetMap
 
 noinst_HEADERS = xhiv-Xkb.h
 
