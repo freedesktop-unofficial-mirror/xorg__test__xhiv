@@ -755,10 +755,11 @@ XhivWaitServer(pid_t server_pid) {
         return exitstat;
     } else if (WIFSIGNALED(pidstat)) {
         int sig = WTERMSIG(pidstat);
-        char signame[SIG2STR_MAX];
+        const char *signame;
 
-        if (sig2str(sig, signame) == -1)
-            snprintf(signame, sizeof(signame), "unknown");
+        signame = strsignal(sig);
+        if (signame == NULL)
+            signame = "unknown";
 
         fprintf(stderr, "Server %ld killed by signal %d (%s)%s.\n",
                 (long) server_pid, sig, signame,
