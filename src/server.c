@@ -494,6 +494,7 @@ HandleClientRequest(client_state *client, xhiv_response *responses)
         if ((rbytes == 0) && (errno == 0)) {
             /* client disconnected */
             _XSERVTransClose(client->conn);
+            client->conn = NULL;
             return;
         }
         if (rbytes <= 0) {
@@ -728,7 +729,8 @@ XhivRunServer(XtransConnInfo *ListenTransConns, int ListenTransCount,
         else
             clientfd.events = POLLIN | POLLOUT;
     }
-    _XSERVTransClose(client.conn);
+    if (client.conn != NULL)
+        _XSERVTransClose(client.conn);
     exit(0);
 }
 
