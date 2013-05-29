@@ -35,10 +35,10 @@ AM_INIT_AUTOMAKE([foreign dist-bzip2])
 # Dependencies for automake's static library support
 AC_PROG_RANLIB
 
-# Require xorg-macros 1.8 or later for MAN_SUBSTS set by XORG_MANPAGE_SECTIONS
+# Require xorg-macros 1.16 or later for XORG_MEMORY_CHECK_FLAGS
 m4_ifndef([XORG_MACROS_VERSION],
-	  [m4_fatal([must install xorg-macros 1.8 or later before running autoconf/autogen])])
-XORG_MACROS_VERSION(1.8)
+	  [m4_fatal([must install xorg-macros 1.16 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.16)
 XORG_DEFAULT_OPTIONS
 
 # Transport selection macro from xtrans.m4
@@ -61,6 +61,13 @@ if test "x$HAVE_XCB" = "xyes" ; then
    AC_DEFINE([HAVE_XCB], [1], [Define if you have the XCB library])
 fi
 AM_CONDITIONAL([HAVE_XCB], [test "x$HAVE_XCB" = "xyes"])
+
+# Use memory debugging flags when running tests
+XORG_MEMORY_CHECK_FLAGS
+if test "x$XORG_MALLOC_DEBUG_ENV" != "x" ; then
+   AM_TESTS_ENVIRONMENT="export ${XORG_MALLOC_DEBUG_ENV} ;"
+fi
+AC_SUBST([AM_TESTS_ENVIRONMENT])
 
 AC_CONFIG_FILES([
 	Makefile
