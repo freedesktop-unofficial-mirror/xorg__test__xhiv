@@ -22,9 +22,11 @@
 #
 
 noinst_PROGRAMS  = XRRGetOutputProperty
-noinst_PROGRAMS += XRRGetProviderProperty
 noinst_PROGRAMS += XRRQueryOutputProperty
+if HAVE_XRANDR_14
+noinst_PROGRAMS += XRRGetProviderProperty
 noinst_PROGRAMS += XRRQueryProviderProperty
+endif HAVE_XRANDR_14
 
 noinst_HEADERS = xhiv-Xrandr.h
 
